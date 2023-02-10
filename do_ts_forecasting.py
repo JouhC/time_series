@@ -29,7 +29,7 @@ def main():
       default='ses',
       help=('Model names: ses | holts | holts_damped | auto_arima | '
             'thetaf | tbats'))
-  parser.add_argument('data','--data', type=str, default=None, help='Time-series training data')
+  parser.add_argument('-d','--data', type=str, default=None, help='Time-series training data')
   parser.add_argument('-f', '--forecast_steps', type=int, default=5, help='Forecast steps into the future')
   
   args = parser.parse_args()
