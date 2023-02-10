@@ -36,12 +36,12 @@ def main():
   args = parser.parse_args()
 
   list_of_models = {
-      "ses" : "SimpleExpSmoothing(train).fit()",
-      "holts" : "Holt(train).fit()",
-      "holts_damped" : "ExponentialSmoothing(train, trend = 'add', damped_trend = True).fit()",
-      "auto_arima" : "auto_arima(train, stepwise = False, maxiter = 100)",
-      "thetaf" : "ThetaModel(train).fit()",
-      "tbats" : "TBATS().fit(train)"
+      "ses" : "SimpleExpSmoothing(args.train).fit()",
+      "holts" : "Holt(args.train).fit()",
+      "holts_damped" : "ExponentialSmoothing(args.train, trend = 'add', damped_trend = True).fit()",
+      "auto_arima" : "auto_arima(args.train, stepwise = False, maxiter = 100)",
+      "thetaf" : "ThetaModel(args.train).fit()",
+      "tbats" : "TBATS().fit(args.train)"
   }
 
   model = eval(list_of_models[args.model])
