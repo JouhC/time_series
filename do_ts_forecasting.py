@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import base64
 import io
 import json
-
+import urllib
 
 def main():
   parser = argparse.ArgumentParser()
@@ -34,7 +34,10 @@ def main():
   
   args = parser.parse_args()
   
-  data = json.loads(args.data)
+  data = urllib.parse.parse_qs(args.data)
+  
+  train = pd.Series(data["train"])
+  y_data = pd.Series(data["y_data"])
   
   list_of_models = {
       "ses" : "SimpleExpSmoothing(data["train"]).fit()",
@@ -55,12 +58,14 @@ def main():
   if not isinstance(forecast, pd.Series):
     forecast = pd.Series(forecast)
 
-  if test is None:
+  if data["test"][0] == 'None':
+    test = None
     rmse, mape, mae = None, None, None
   else:
-    rmse = np.sqrt(mean_squared_error(forecast, data["test"])).round(2)
-    mape = np.round(np.mean(np.abs(forecast - data["test"])/np.abs(data["test"]))*100,2)
-    mae = mean_absolute_error(data["test"], forecast)
+    test = pd.Series(data["test"][0])
+    rmse = np.sqrt(mean_squared_error(forecast, test)).round(2)
+    mape = np.round(np.mean(np.abs(forecast - test)/np.abs(test))*100,2)
+    mae = mean_absolute_error(test, forecast)
   
 
   output = {
@@ -69,7 +74,7 @@ def main():
       "rmse": rmse if rmse is not None else "None",
       "mape": mape if mape is not None else "None",
       "mae": mae if mae is not None else "None",
-      "plot": forecast_plot(data["y_data"], data["test"], forecast)}
+      "plot": forecast_plot(y_data, test, forecast)}
 
   return output
 
