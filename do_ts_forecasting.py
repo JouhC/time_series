@@ -36,6 +36,8 @@ def main():
   
   data = urllib.parse.parse_qs(args.data)
   
+  print(data["train"])
+  print(data["y_data"])
   train = pd.Series(data["train"])
   y_data = pd.Series(data["y_data"])
   
