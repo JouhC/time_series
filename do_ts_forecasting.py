@@ -1,6 +1,23 @@
 import argparse
-import pandas as pd
+from statsmodels.tsa.holtwinters import SimpleExpSmoothing
+from statsmodels.tsa.holtwinters import Holt
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.exponential_smoothing.ets import ETSModel
+from statsmodels.tsa.seasonal import STL
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from statsmodels.tsa.deterministic import Fourier
+from statsmodels.tsa.forecasting.theta import ThetaModel
+from pmdarima.arima import auto_arima
+from tbats import BATS, TBATS
+from scipy.stats import boxcox
 import numpy as np
+import pandas as pd
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
+import matplotlib.pyplot as plt
+import base64
+import io
+
 
 def main():
   parser = argparse.ArgumentParser()
@@ -57,3 +74,23 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+  
+def forecast_plot(y_data, test, forecast):
+  plt.figure(figsize=(16, 8), dpi=150)
+  
+  if test is not None:
+    test.plot(label='test')
+
+  y_data.plot(label='y_data', color='orange')
+  forecast.plot(label='forecast')
+  plt.title('Forecast Plot')
+  plt.xlabel('Weeks')
+  plt.legend()
+
+  buf = io.BytesIO()
+  plt.savefig(buf, format='png')
+  buf.seek(0)
+  plt.close()
+
+  return base64.b64encode(buf.read())
