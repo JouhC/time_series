@@ -17,6 +17,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolu
 import matplotlib.pyplot as plt
 import base64
 import io
+import json
 
 
 def main():
@@ -28,20 +29,20 @@ def main():
       default='ses',
       help=('Model names: ses | holts | holts_damped | auto_arima | '
             'thetaf | tbats'))
-  parser.add_argument('--train', type=pd.Series, default=None, help='Time-series training data')
-  parser.add_argument('-y', '--y_data', type=pd.Series, default=None, help='Time-series raw data')
-  parser.add_argument('--test', type=pd.Series, default=None, help='Time-series test data')
+  parser.add_argument('data','--data', type=str, default=None, help='Time-series training data')
   parser.add_argument('-f', '--forecast_steps', type=int, default=5, help='Forecast steps into the future')
   
   args = parser.parse_args()
-
+  
+  data = json.loads(args.data)
+  
   list_of_models = {
-      "ses" : "SimpleExpSmoothing(args.train).fit()",
-      "holts" : "Holt(args.train).fit()",
-      "holts_damped" : "ExponentialSmoothing(args.train, trend = 'add', damped_trend = True).fit()",
-      "auto_arima" : "auto_arima(args.train, stepwise = False, maxiter = 100)",
-      "thetaf" : "ThetaModel(args.train).fit()",
-      "tbats" : "TBATS().fit(args.train)"
+      "ses" : "SimpleExpSmoothing(data["train"]).fit()",
+      "holts" : "Holt(data["train"]).fit()",
+      "holts_damped" : "ExponentialSmoothing(data["train"], trend = 'add', damped_trend = True).fit()",
+      "auto_arima" : "auto_arima(data["train"], stepwise = False, maxiter = 100)",
+      "thetaf" : "ThetaModel(data["train"]).fit()",
+      "tbats" : "TBATS().fit(data["train"])"
   }
 
   model = eval(list_of_models[args.model])
@@ -57,9 +58,9 @@ def main():
   if test is None:
     rmse, mape, mae = None, None, None
   else:
-    rmse = np.sqrt(mean_squared_error(forecast, test)).round(2)
-    mape = np.round(np.mean(np.abs(forecast - args.test)/np.abs(args.test))*100,2)
-    mae = mean_absolute_error(args.test, forecast)
+    rmse = np.sqrt(mean_squared_error(forecast, data["test"])).round(2)
+    mape = np.round(np.mean(np.abs(forecast - data["test"])/np.abs(data["test"]))*100,2)
+    mae = mean_absolute_error(data["test"], forecast)
   
 
   output = {
@@ -68,7 +69,7 @@ def main():
       "rmse": rmse if rmse is not None else "None",
       "mape": mape if mape is not None else "None",
       "mae": mae if mae is not None else "None",
-      "plot": forecast_plot(args.y_data, args.test, forecast)}
+      "plot": forecast_plot(data["y_data"], data["test"], forecast)}
 
   return output
 
