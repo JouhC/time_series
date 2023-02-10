@@ -40,12 +40,12 @@ def main():
   y_data = pd.Series(data["y_data"])
   
   list_of_models = {
-      "ses" : "SimpleExpSmoothing(data["train"]).fit()",
-      "holts" : "Holt(data["train"]).fit()",
-      "holts_damped" : "ExponentialSmoothing(data["train"], trend = 'add', damped_trend = True).fit()",
-      "auto_arima" : "auto_arima(data["train"], stepwise = False, maxiter = 100)",
-      "thetaf" : "ThetaModel(data["train"]).fit()",
-      "tbats" : "TBATS().fit(data["train"])"
+      "ses" : "SimpleExpSmoothing(train).fit()",
+      "holts" : "Holt(train).fit()",
+      "holts_damped" : "ExponentialSmoothing(train, trend = 'add', damped_trend = True).fit()",
+      "auto_arima" : "auto_arima(train, stepwise = False, maxiter = 100)",
+      "thetaf" : "ThetaModel(train).fit()",
+      "tbats" : "TBATS().fit(train)"
   }
 
   model = eval(list_of_models[args.model])
