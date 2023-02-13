@@ -17,8 +17,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolu
 import matplotlib.pyplot as plt
 import base64
 import io
-import json
-import urllib
 
 def main():
   parser = argparse.ArgumentParser()
@@ -34,7 +32,7 @@ def main():
   
   args = parser.parse_args()
   
-  data = urllib.parse.parse_qs(args.data)
+  print(exact(args.data))
   
   print(data["train"])
   print(data["y_data"])
