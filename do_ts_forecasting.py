@@ -32,7 +32,7 @@ def main():
   
   args = parser.parse_args()
   
-  print(exact(args.data))
+  print(exec(args.data))
   
   print(data["train"])
   print(data["y_data"])
